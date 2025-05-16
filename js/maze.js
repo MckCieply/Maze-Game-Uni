@@ -1,5 +1,5 @@
-import {getContext} from "./canvas";
-import {MAZE_TEMPLATE, TILE_SIZE} from "./config";
+import {getContext} from "./canvas.js";
+import {MAZE_TEMPLATE, TILE_HEIGHT, TILE_WIDTH} from "./config.js";
 
 /**
  * Draw the maze grid on the canvas.
@@ -10,7 +10,7 @@ export function drawMaze() {
     MAZE_TEMPLATE.forEach((row, y) => {
         row.forEach((cell, x) => {
             ctx.fillStyle = cell === 1 ? '#333' : '#eee';
-            ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+            ctx.fillRect(x * TILE_WIDTH, y * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
         });
     });
 }
