@@ -1,10 +1,9 @@
 // main.js
-import { setupCanvas, getContext } from './canvas.js';
+import { setupCanvas } from './canvas.js';
+import {drawMaze} from "./maze.js";
 
 setupCanvas();
 
-const ctx = getContext();
-ctx.fillStyle = 'red';
-ctx.fillRect(40, 40, 40, 40);
+drawMaze();
 
 console.log('Canvas is set up.');
