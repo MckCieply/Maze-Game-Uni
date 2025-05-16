@@ -1,3 +1,7 @@
 html{
     background-color: lightsteelblue;
 }
+
+canvas{
+    background-color: black;
+}
