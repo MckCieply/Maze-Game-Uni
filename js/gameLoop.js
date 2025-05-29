@@ -1,57 +1,77 @@
 import { getContext } from './canvas.js';
 import { drawMaze } from './maze.js';
+import { TILE_HEIGHT, TILE_WIDTH } from "./config.js";
+import { PlayerInput } from "./playerInput.js";
 
 // Game state management
 // Either "playing", "success", or "failed"
 let state = "playing";
+let playerX = 400;
+let playerY = 450;
+let keyProcessed = false;
 
-let colorValue = 0;
-/**
- * Restart game functionality
- * FOR NOW CHANGES PIXEL COLOR EVERY 2 SECONDS
- */
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+const playerInput = new PlayerInput();
+
+function loop() {
+    handleInput();
+    update();
+    render();
+    requestAnimationFrame(loop);
 }
 
-async function changeColorLoop() {
-    for (;;) {
-        colorValue = (colorValue + 80) % 256;
-        await sleep(2000);
+function handleInput() {
+    if (!keyProcessed) {
+        if (playerInput.isKeyPressed('ArrowUp')) {
+            playerY -= TILE_HEIGHT;
+            keyProcessed = true;
+        }
+        if (playerInput.isKeyPressed('ArrowDown')) {
+            playerY += TILE_HEIGHT;
+            keyProcessed = true;
+        }
+        if (playerInput.isKeyPressed('ArrowLeft')) {
+            playerX -= TILE_WIDTH;
+            keyProcessed = true;
+        }
+        if (playerInput.isKeyPressed('ArrowRight')) {
+            playerX += TILE_WIDTH;
+            keyProcessed = true;
+        }
+    }
+
+    if (!playerInput.keys.size) {
+        keyProcessed = false;
     }
 }
 
-function loop() {
-    checkState();
-    const ctx = getContext();
+function update() {
+    updateUI();
+}
 
+// === Update UI Based on State ===
+function updateUI() {
+    if (state === "success") {
+        document.getElementById("success").className = "success-visible";
+    } else if (state === "failed") {
+        document.getElementById("failure").className = "failure-visible";
+    } else {
+        document.getElementById("success").className = "success-hidden";
+        document.getElementById("failure").className = "failure-hidden";
+    }
+}
+
+function render() {
+    const ctx = getContext();
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
     drawMaze();
 
-    ctx.fillStyle = `rgb(${colorValue}, 100, 200)`;
-    ctx.fillRect(10, 10, 10, 10);
-
-    requestAnimationFrame(loop);
+    ctx.fillStyle = "rgb(0, 100, 200)";
+    ctx.fillRect(playerX, playerY, TILE_WIDTH, TILE_HEIGHT);
 }
 
-function checkState(){
-    if (state === "success"){
-        document.getElementById("success").className = "success-visible";
-
-    }
-    if (state === "playing"){
-        document.getElementById("success").className = "success-hidden";
-        document.getElementById("failure").className = "failure-hidden";
-    }
-    if (state === "failed") {
-        document.getElementById("failure").className = "failure-visible";
-    }
-}
-
-// Call either when player exits the maze or when collision is detected
-function changeState(newState) {
-    if (newState === "playing" || newState === "success" || newState === "failed") {
+export function changeState(newState) {
+    if (["playing", "success", "failed"].includes(newState)) {
         state = newState;
     } else {
         console.error("Invalid game state:", newState);
@@ -59,6 +79,5 @@ function changeState(newState) {
 }
 
 export function startLoop() {
-    changeColorLoop();
     requestAnimationFrame(loop);
 }
