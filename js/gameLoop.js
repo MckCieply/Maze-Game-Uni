@@ -1,6 +1,10 @@
 import { getContext } from './canvas.js';
 import { drawMaze } from './maze.js';
 
+// Game state management
+// Either "playing", "success", or "failed"
+let state = "playing";
+
 let colorValue = 0;
 /**
  * Restart game functionality
@@ -18,6 +22,7 @@ async function changeColorLoop() {
 }
 
 function loop() {
+    checkState();
     const ctx = getContext();
 
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -28,6 +33,26 @@ function loop() {
     ctx.fillRect(10, 10, 10, 10);
 
     requestAnimationFrame(loop);
+}
+
+function checkState(){
+    if (state === "success"){
+        document.getElementById("success").className = "success-visible";
+
+    }
+    if (state === "playing"){
+        document.getElementById("success").className = "success-hidden";
+
+    }
+}
+
+// Call either when player exits the maze or when collision is detected
+function changeState(newState) {
+    if (newState === "playing" || newState === "success" || newState === "failed") {
+        state = newState;
+    } else {
+        console.error("Invalid game state:", newState);
+    }
 }
 
 export function startLoop() {
