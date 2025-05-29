@@ -13,6 +13,8 @@ let keyProcessed = false;
 const playerInput = new PlayerInput();
 
 function loop() {
+    if(state === "failed") return;
+
     handleInput();
     update();
     render();
@@ -70,10 +72,13 @@ function processMovement(key, dx, dy) {
     if (playerInput.isKeyPressed(key)) {
         const newRow = getRow(playerY + dy);
         const newCol = getCol(playerX + dx);
-        if (MAZE_TEMPLATE[newRow]?.[newCol] === 0) {
+        const cell = MAZE_TEMPLATE[newRow]?.[newCol];
+        if (cell === 0) {
             playerX += dx;
             playerY += dy;
             keyProcessed = true;
+        } else if (cell === 1){
+            changeState("failed");
         }
     }
 }
