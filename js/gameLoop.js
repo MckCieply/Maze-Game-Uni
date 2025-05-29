@@ -42,7 +42,10 @@ function checkState(){
     }
     if (state === "playing"){
         document.getElementById("success").className = "success-hidden";
-
+        document.getElementById("failure").className = "failure-hidden";
+    }
+    if (state === "failed") {
+        document.getElementById("failure").className = "failure-visible";
     }
 }
 
