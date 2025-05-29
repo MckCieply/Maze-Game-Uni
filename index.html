@@ -6,7 +6,19 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-<canvas id="gameCanvas"></canvas>
+
+<div class="game-container">
+    <canvas id="gameCanvas"></canvas>
+    <div id="success" class="success-hidden">
+        <div class="backdrop">
+            <div class="green-container">
+                <h1>Congratulations!</h1>
+                <p>You have successfully completed the game.</p>
+                <!--    TODO: Add play again button here-->
+            </div>
+        </div>
+        </div>
+</div>
 <script type="module" src="js/app.js"></script>
 </body>
 </html>
