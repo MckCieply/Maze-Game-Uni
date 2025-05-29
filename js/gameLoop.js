@@ -1,6 +1,6 @@
 import { getContext } from './canvas.js';
 import { drawMaze } from './maze.js';
-import { TILE_HEIGHT, TILE_WIDTH } from "./config.js";
+import {MAZE_TEMPLATE, TILE_HEIGHT, TILE_WIDTH} from "./config.js";
 import { PlayerInput } from "./playerInput.js";
 
 // Game state management
@@ -21,22 +21,10 @@ function loop() {
 
 function handleInput() {
     if (!keyProcessed) {
-        if (playerInput.isKeyPressed('ArrowUp')) {
-            playerY -= TILE_HEIGHT;
-            keyProcessed = true;
-        }
-        if (playerInput.isKeyPressed('ArrowDown')) {
-            playerY += TILE_HEIGHT;
-            keyProcessed = true;
-        }
-        if (playerInput.isKeyPressed('ArrowLeft')) {
-            playerX -= TILE_WIDTH;
-            keyProcessed = true;
-        }
-        if (playerInput.isKeyPressed('ArrowRight')) {
-            playerX += TILE_WIDTH;
-            keyProcessed = true;
-        }
+        processMovement('ArrowUp', 0, -TILE_HEIGHT);
+        processMovement('ArrowDown', 0, TILE_HEIGHT);
+        processMovement('ArrowLeft', -TILE_WIDTH, 0);
+        processMovement('ArrowRight', TILE_WIDTH, 0);
     }
 
     if (!playerInput.keys.size) {
@@ -78,6 +66,26 @@ export function changeState(newState) {
     }
 }
 
+function processMovement(key, dx, dy) {
+    if (playerInput.isKeyPressed(key)) {
+        const newRow = getRow(playerY + dy);
+        const newCol = getCol(playerX + dx);
+        if (MAZE_TEMPLATE[newRow]?.[newCol] === 0) {
+            playerX += dx;
+            playerY += dy;
+            keyProcessed = true;
+        }
+    }
+}
+
 export function startLoop() {
     requestAnimationFrame(loop);
+}
+
+function getRow(y) {
+    return Math.floor(y / TILE_HEIGHT);
+}
+
+function getCol(x) {
+    return Math.floor(x / TILE_WIDTH);
 }
