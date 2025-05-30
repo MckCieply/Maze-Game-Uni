@@ -1,13 +1,12 @@
 import { getContext } from './canvas.js';
-import { drawMaze } from './maze.js';
+import {drawMaze, getStartCoords} from './maze.js';
 import {MAZE_TEMPLATE, TILE_HEIGHT, TILE_WIDTH} from "./config.js";
 import { PlayerInput } from "./playerInput.js";
 
 // Game state management
 // Either "playing", "success", or "failed"
 let state = "playing";
-let playerX = 400;
-let playerY = 450;
+let { x: playerX, y: playerY } = getStartCoords(MAZE_TEMPLATE);
 let keyProcessed = false;
 
 const playerInput = new PlayerInput();
