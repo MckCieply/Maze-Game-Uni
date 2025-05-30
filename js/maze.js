@@ -51,3 +51,39 @@ export function getStartCoords(maze) {
     }
     console.warn('Start tile not found in the maze.');
 }
+
+/**
+ * Retrieves the tile coordinates (row and column) based on the given X and Y pixel coordinates.
+ *
+ * @param {number} x - The X-coordinate in pixels.
+ * @param {number} y - The Y-coordinate in pixels.
+ * @returns {{row: number, col: number}} - The row and column indices of the tile.
+ */
+export function getTileIndexFromPixels(x, y) {
+    return {
+        row: Math.floor(y / TILE_HEIGHT),
+        col: Math.floor(x / TILE_WIDTH)
+    };
+}
+
+/**
+ * Checks the type of tile in the maze based on its row and column indices.
+ *
+ * @param {number[][]} maze - The maze grid represented as a 2D array.
+ * @param {number} row - The row index of the tile.
+ * @param {number} col - The column index of the tile.
+ * @returns {string} - The type of the tile: "wall", "win", "empty", or "unknown".
+ */
+export function checkTile(maze, row, col) {
+    const value = maze[row]?.[col];
+
+    if (value === 1)
+        return "wall";
+     else if (value === 3)
+        return "win";
+     else if (value === 0 || value === 2)
+        return "empty";
+
+
+    return "unknown";
+}

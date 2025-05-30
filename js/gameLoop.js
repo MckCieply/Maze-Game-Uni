@@ -85,11 +85,3 @@ function processMovement(key, dx, dy) {
 export function startLoop() {
     requestAnimationFrame(loop);
 }
-
-function getRow(y) {
-    return Math.floor(y / TILE_HEIGHT);
-}
-
-function getCol(x) {
-    return Math.floor(x / TILE_WIDTH);
-}
