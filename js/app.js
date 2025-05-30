@@ -1,12 +1,8 @@
 // main.js
 import { setupCanvas } from './canvas.js';
-import { drawMaze } from "./maze.js";
-import {startLoop} from "./gameLoop.js";
+import {startLoop, restartGame} from "./gameLoop.js";
 
 setupCanvas();
-
-console.log('Canvas is ready to be set up.');
-
 startLoop();
+window.restartGame = restartGame;
 
-console.log('Canvas is set up.');

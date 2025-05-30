@@ -37,7 +37,6 @@ function update() {
     updateUI();
 }
 
-// === Update UI Based on State ===
 function updateUI() {
     if (state === "success") {
         document.getElementById("success").className = "success-visible";
@@ -89,6 +88,13 @@ function processMovement(key, dx, dy) {
     }
 }
 
+export function restartGame(){
+    changeState("playing");
+    ({ x: playerX, y: playerY } = getStartCoords(MAZE_TEMPLATE));
+    keyProcessed = false;
+    update();
+    startLoop();
+}
 
 export function startLoop() {
     requestAnimationFrame(loop);
