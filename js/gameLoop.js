@@ -1,5 +1,5 @@
 import { getContext } from './canvas.js';
-import {drawMaze, getStartCoords} from './maze.js';
+import {checkTile, drawMaze, getStartCoords, getTileIndexFromPixels} from './maze.js';
 import {MAZE_TEMPLATE, TILE_HEIGHT, TILE_WIDTH} from "./config.js";
 import { PlayerInput } from "./playerInput.js";
 
@@ -12,7 +12,7 @@ let keyProcessed = false;
 const playerInput = new PlayerInput();
 
 function loop() {
-    if(state === "failed") return;
+    if(state !== "playing") return;
 
     handleInput();
     update();
@@ -68,19 +68,27 @@ export function changeState(newState) {
 }
 
 function processMovement(key, dx, dy) {
-    if (playerInput.isKeyPressed(key)) {
-        const newRow = getRow(playerY + dy);
-        const newCol = getCol(playerX + dx);
-        const cell = MAZE_TEMPLATE[newRow]?.[newCol];
-        if (cell === 0) {
-            playerX += dx;
-            playerY += dy;
-            keyProcessed = true;
-        } else if (cell === 1){
-            changeState("failed");
-        }
+    if (!playerInput.isKeyPressed(key)) return;
+
+    const { row, col } = getTileIndexFromPixels(playerX + dx, playerY + dy);
+
+    const tileType = checkTile(MAZE_TEMPLATE, row, col);
+
+    if (tileType === "win") {
+        changeState("success");
+        playerX += dx;              // Move player to win tile
+        playerY += dy;
+    }
+    else if (tileType === "wall")
+        changeState("failed");
+
+    else if (tileType === "empty"){
+        playerX += dx;
+        playerY += dy;
+        keyProcessed = true;
     }
 }
+
 
 export function startLoop() {
     requestAnimationFrame(loop);
