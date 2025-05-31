@@ -1,7 +1,7 @@
 import { getContext } from './canvas.js';
 import { checkTile, drawMaze, getStartCoords, getTileIndexFromPixels } from './maze.js';
 import { getCurrentMaze, setCurrentMaze, TILE_HEIGHT, TILE_WIDTH } from "./config.js";
-import { MAZES } from "./config.js";
+import { regenerateMaze} from "./config.js";
 import { PlayerInput } from "./playerInput.js";
 
 let state = "playing";
@@ -10,9 +10,7 @@ let keyProcessed = false;
 
 const playerInput = new PlayerInput();
 
-const mazeOrder = Object.keys(MAZES);
-let currentMazeIndex = mazeOrder.indexOf(Object.keys(MAZES).find(key => MAZES[key] === getCurrentMaze()));
-if (currentMazeIndex === -1) currentMazeIndex = 0;
+let maze;
 
 function loop() {
     if (state !== "playing") return;
@@ -83,6 +81,7 @@ function processMovement(key, dx, dy) {
 }
 
 export function restartGame() {
+    maze = getCurrentMaze();
     changeState("playing");
     ({ x: playerX, y: playerY } = getStartCoords(getCurrentMaze()));
     keyProcessed = false;
@@ -96,15 +95,7 @@ export function startLoop() {
 }
 
 export function nextLevel() {
-    if (currentMazeIndex + 1 >= mazeOrder.length) {
-        alert("Gratulacje! To był ostatni poziom.");
-        return;
-    }
-
-    currentMazeIndex++;
-    const nextMazeKey = mazeOrder[currentMazeIndex];
-    setCurrentMaze(nextMazeKey);
-
+    regenerateMaze();
     changeState("playing");
     ({ x: playerX, y: playerY } = getStartCoords(getCurrentMaze()));
     keyProcessed = false;

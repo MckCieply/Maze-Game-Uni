@@ -2,7 +2,7 @@ import {getContext} from "./canvas.js";
 import {getCurrentMaze, TILE_HEIGHT, TILE_WIDTH} from "./config.js";
 
 /**
- * Draws the maze grid on the canvas based on the `MAZE_TEMPLATE`.
+ * Draws the maze grid on the canvas based on the `MAZES`.
  * Walls are drawn in dark gray (#333), and paths are drawn in light gray (#eee).
  */
 
@@ -37,7 +37,7 @@ export function findTile(maze, value) {
 
 /**
  * Retrieves the starting coordinates of the player based on the maze configuration.
- * The starting tile is identified by the value `2` in the `MAZE_TEMPLATE`.
+ * The starting tile is identified by the value `2` in the `MAZES`.
  *
  * @param {number[][]} maze - The maze grid represented as a 2D array.
  * @returns {{x: number, y: number}} - The starting X and Y coordinates in pixels.
@@ -62,8 +62,8 @@ export function getStartCoords(maze) {
  */
 export function getTileIndexFromPixels(x, y) {
     return {
-        row: Math.floor(y / TILE_HEIGHT),
-        col: Math.floor(x / TILE_WIDTH)
+        row: Math.round(y / TILE_HEIGHT),
+        col: Math.round(x / TILE_WIDTH)
     };
 }
 
