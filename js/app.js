@@ -1,8 +1,12 @@
-// main.js
 import { setupCanvas } from './canvas.js';
-import {startLoop, restartGame} from "./gameLoop.js";
+import { startLoop, restartGame, nextLevel } from "./gameLoop.js";
+import { getCurrentMaze, setCurrentMaze } from "./config.js";
+import { drawMaze, getStartCoords } from "./maze.js";
 
 setupCanvas();
+drawMaze(getCurrentMaze());
 startLoop();
+
 window.restartGame = restartGame;
+window.nextLevel = nextLevel;
 

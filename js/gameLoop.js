@@ -1,18 +1,21 @@
 import { getContext } from './canvas.js';
-import {checkTile, drawMaze, getStartCoords, getTileIndexFromPixels} from './maze.js';
-import {MAZE_TEMPLATE, TILE_HEIGHT, TILE_WIDTH} from "./config.js";
+import { checkTile, drawMaze, getStartCoords, getTileIndexFromPixels } from './maze.js';
+import { getCurrentMaze, setCurrentMaze, TILE_HEIGHT, TILE_WIDTH } from "./config.js";
+import { MAZES } from "./config.js";
 import { PlayerInput } from "./playerInput.js";
 
-// Game state management
-// Either "playing", "success", or "failed"
 let state = "playing";
-let { x: playerX, y: playerY } = getStartCoords(MAZE_TEMPLATE);
+let { x: playerX, y: playerY } = getStartCoords(getCurrentMaze());
 let keyProcessed = false;
 
 const playerInput = new PlayerInput();
 
+const mazeOrder = Object.keys(MAZES);
+let currentMazeIndex = mazeOrder.indexOf(Object.keys(MAZES).find(key => MAZES[key] === getCurrentMaze()));
+if (currentMazeIndex === -1) currentMazeIndex = 0;
+
 function loop() {
-    if(state !== "playing") return;
+    if (state !== "playing") return;
 
     handleInput();
     update();
@@ -38,21 +41,15 @@ function update() {
 }
 
 function updateUI() {
-    if (state === "success") {
-        document.getElementById("success").className = "success-visible";
-    } else if (state === "failed") {
-        document.getElementById("failure").className = "failure-visible";
-    } else {
-        document.getElementById("success").className = "success-hidden";
-        document.getElementById("failure").className = "failure-hidden";
-    }
+    document.getElementById("success").className = state === "success" ? "success-visible" : "success-hidden";
+    document.getElementById("failure").className = state === "failed" ? "failure-visible" : "failure-hidden";
 }
 
 function render() {
     const ctx = getContext();
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    drawMaze();
+    drawMaze(getCurrentMaze());
 
     ctx.fillStyle = "rgb(0, 100, 200)";
     ctx.fillRect(playerX, playerY, TILE_WIDTH, TILE_HEIGHT);
@@ -70,32 +67,48 @@ function processMovement(key, dx, dy) {
     if (!playerInput.isKeyPressed(key)) return;
 
     const { row, col } = getTileIndexFromPixels(playerX + dx, playerY + dy);
-
-    const tileType = checkTile(MAZE_TEMPLATE, row, col);
+    const tileType = checkTile(getCurrentMaze(), row, col);
 
     if (tileType === "win") {
         changeState("success");
-        playerX += dx;              // Move player to win tile
+        playerX += dx;
         playerY += dy;
-    }
-    else if (tileType === "wall")
+    } else if (tileType === "wall") {
         changeState("failed");
-
-    else if (tileType === "empty"){
+    } else if (tileType === "empty") {
         playerX += dx;
         playerY += dy;
         keyProcessed = true;
     }
 }
 
-export function restartGame(){
+export function restartGame() {
     changeState("playing");
-    ({ x: playerX, y: playerY } = getStartCoords(MAZE_TEMPLATE));
+    ({ x: playerX, y: playerY } = getStartCoords(getCurrentMaze()));
     keyProcessed = false;
     update();
+    render();
     startLoop();
 }
 
 export function startLoop() {
     requestAnimationFrame(loop);
+}
+
+export function nextLevel() {
+    if (currentMazeIndex + 1 >= mazeOrder.length) {
+        alert("Gratulacje! To był ostatni poziom.");
+        return;
+    }
+
+    currentMazeIndex++;
+    const nextMazeKey = mazeOrder[currentMazeIndex];
+    setCurrentMaze(nextMazeKey);
+
+    changeState("playing");
+    ({ x: playerX, y: playerY } = getStartCoords(getCurrentMaze()));
+    keyProcessed = false;
+    update();
+    render();
+    startLoop();
 }
