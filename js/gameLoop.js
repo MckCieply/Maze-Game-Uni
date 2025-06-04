@@ -3,17 +3,18 @@ import { checkTile, drawMaze, getStartCoords, getTileIndexFromPixels } from './m
 import { getCurrentMaze, setCurrentMaze, TILE_HEIGHT, TILE_WIDTH } from "./config.js";
 import { regenerateMaze} from "./config.js";
 import { PlayerInput } from "./playerInput.js";
+import { createPlayerMovementController } from "./playerMovement.js";
 
 let state = "playing";
-let { x: playerX, y: playerY } = getStartCoords(getCurrentMaze());
-let keyProcessed = false;
-
 const playerInput = new PlayerInput();
+const movementController = createPlayerMovementController(changeState);
+let keyProcessed = false;
 
 let maze;
 
 function loop() {
-    if (state !== "playing") return;
+   /* if (state !== "playing") return;*/
+    if (state !== "playing" && !movementController.isPlayerMoving()) return;
 
     handleInput();
     update();
@@ -22,11 +23,19 @@ function loop() {
 }
 
 function handleInput() {
-    if (!keyProcessed) {
-        processMovement('ArrowUp', 0, -TILE_HEIGHT);
-        processMovement('ArrowDown', 0, TILE_HEIGHT);
-        processMovement('ArrowLeft', -TILE_WIDTH, 0);
-        processMovement('ArrowRight', TILE_WIDTH, 0);
+    if (!keyProcessed && !movementController.isPlayerMoving()) {
+        if (playerInput.isKeyPressed('ArrowUp')) {
+            if (movementController.tryMove(0, -TILE_HEIGHT)) keyProcessed = true;
+        }
+        if (playerInput.isKeyPressed('ArrowDown')) {
+            if (movementController.tryMove(0, TILE_HEIGHT)) keyProcessed = true;
+        }
+        if (playerInput.isKeyPressed('ArrowLeft')) {
+            if (movementController.tryMove(-TILE_WIDTH, 0)) keyProcessed = true;
+        }
+        if (playerInput.isKeyPressed('ArrowRight')) {
+            if (movementController.tryMove(TILE_WIDTH, 0)) keyProcessed = true;
+        }
     }
 
     if (!playerInput.keys.size) {
@@ -49,8 +58,10 @@ function render() {
 
     drawMaze(getCurrentMaze());
 
+    const { x, y } = movementController.getRenderPosition();
+
     ctx.fillStyle = "rgb(0, 100, 200)";
-    ctx.fillRect(playerX, playerY, TILE_WIDTH, TILE_HEIGHT);
+    ctx.fillRect(x, y, TILE_WIDTH, TILE_HEIGHT);
 }
 
 export function changeState(newState) {
@@ -61,29 +72,22 @@ export function changeState(newState) {
     }
 }
 
-function processMovement(key, dx, dy) {
-    if (!playerInput.isKeyPressed(key)) return;
-
-    const { row, col } = getTileIndexFromPixels(playerX + dx, playerY + dy);
-    const tileType = checkTile(getCurrentMaze(), row, col);
-
-    if (tileType === "win") {
-        changeState("success");
-        playerX += dx;
-        playerY += dy;
-    } else if (tileType === "wall") {
-        changeState("failed");
-    } else if (tileType === "empty") {
-        playerX += dx;
-        playerY += dy;
-        keyProcessed = true;
-    }
-}
-
 export function restartGame() {
     maze = getCurrentMaze();
     changeState("playing");
-    ({ x: playerX, y: playerY } = getStartCoords(getCurrentMaze()));
+    const startCoords = getStartCoords(getCurrentMaze());
+    movementController.init(startCoords);
+    keyProcessed = false;
+    update();
+    render();
+    startLoop();
+}
+
+export function nextLevel() {
+    regenerateMaze();
+    changeState("playing");
+    const startCoords = getStartCoords(getCurrentMaze());
+    movementController.init(startCoords);
     keyProcessed = false;
     update();
     render();
@@ -91,15 +95,12 @@ export function restartGame() {
 }
 
 export function startLoop() {
-    requestAnimationFrame(loop);
-}
-
-export function nextLevel() {
-    regenerateMaze();
+    maze = getCurrentMaze();
     changeState("playing");
-    ({ x: playerX, y: playerY } = getStartCoords(getCurrentMaze()));
+    const startCoords = getStartCoords(maze);
+    movementController.init(startCoords);
     keyProcessed = false;
     update();
     render();
-    startLoop();
+    requestAnimationFrame(loop);
 }
