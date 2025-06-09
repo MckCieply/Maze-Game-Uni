@@ -9,8 +9,6 @@ export const MAZE_COLUMNS = 21;
  * 0 = path, 1 = wall., 2 = start, 3 = end
  */
 
-let currentMazeKey;
-
 function createEmptyMaze(rows, cols) {
     return Array.from({length: rows}, (_, y) =>
         Array.from({length: cols}, (_, x) => (x % 2 === 1 && y % 2 === 1 ? 0 : 1))
@@ -89,13 +87,6 @@ export function getCurrentMaze() {
 }
 export function regenerateMaze() {
     currentMaze = generateMaze(MAZE_ROWS, MAZE_COLUMNS);
-}
-export function setCurrentMaze(mazeName) {
-    if (MAZES[mazeName]) {
-        currentMazeKey = mazeName;
-    } else {
-        console.error(`Maze ${mazeName} does not exist.`);
-    }
 }
 
 export const TILE_HEIGHT = CANVAS_HEIGHT / MAZE_ROWS
