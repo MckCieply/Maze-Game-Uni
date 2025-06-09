@@ -21,13 +21,20 @@ export function drawMaze(template, playerTileCoords) {
 
                 // Visibility decreases in steps based on the distance.
                 let visibility = 1.0;
-                if (distance > 0) {
-                    visibility = 1.0 - ((distance - 1) / RENDER_DISTANCE);
+                if (distance > 2) {
+                    visibility = 1.0 - ((distance - 2) / (RENDER_DISTANCE - 2));
                 }
 
                 ctx.globalAlpha = Math.max(0, visibility);
                 ctx.fillStyle = cell === 1 ? '#333' : '#eee';
-                ctx.fillRect(x * TILE_WIDTH, y * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
+
+                // Calculate precise, rounded pixel values for each tile to ensure no gaps or overlaps.
+                const drawX = Math.round(x * TILE_WIDTH);
+                const drawY = Math.round(y * TILE_HEIGHT);
+                const drawWidth = Math.round((x + 1) * TILE_WIDTH) - drawX;
+                const drawHeight = Math.round((y + 1) * TILE_HEIGHT) - drawY;
+
+                ctx.fillRect(drawX, drawY, drawWidth, drawHeight);
             }
         });
     });
