@@ -1,5 +1,5 @@
 import {getContext} from "./canvas.js";
-import {getCurrentMaze, RENDER_DISTANCE, TILE_HEIGHT, TILE_WIDTH} from "./config.js";
+import {RENDER_DISTANCE, TILE_HEIGHT, TILE_WIDTH} from "./config.js";
 
 /**
  * Draws the maze grid on the canvas.
