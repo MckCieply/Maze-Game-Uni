@@ -6,21 +6,35 @@ import {getCurrentMaze, RENDER_DISTANCE, TILE_HEIGHT, TILE_WIDTH} from "./config
  * Walls are drawn in dark gray (#333), and paths are drawn in light gray (#eee).
  */
 
-export function drawMaze(template, playerCoords) {
+export function drawMaze(template, playerTileCoords) {
     const ctx = getContext();
+
+    ctx.fillStyle = '#393939';
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
     template.forEach((row, y) => {
         row.forEach((cell, x) => {
-            const distance = Math.sqrt(Math.pow(playerCoords.col - x, 2) + Math.pow(playerCoords.row - y, 2));
+            // Use Chebyshev distance to create a square-shaped field of view
+            const distance = Math.max(Math.abs(playerTileCoords.col - x), Math.abs(playerTileCoords.row - y));
 
             if (distance <= RENDER_DISTANCE) {
+                // If the tile is within the visible area, draw it over the gray fog.
+
+                // Visibility decreases in steps based on the distance.
+                let visibility = 1.0;
+                if (distance > 0) {
+                    visibility = 1.0 - ((distance - 1) / RENDER_DISTANCE);
+                }
+
+                ctx.globalAlpha = Math.max(0, visibility);
                 ctx.fillStyle = cell === 1 ? '#333' : '#eee';
-            } else {
-                ctx.fillStyle = 'gray';
+                ctx.fillRect(x * TILE_WIDTH, y * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
             }
-            ctx.fillRect(x * TILE_WIDTH, y * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
         });
     });
+
+    // Reset globalAlpha to 1.0 so it doesn't affect other drawing operations
+    ctx.globalAlpha = 1.0;
 }
 
 /**
