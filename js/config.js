@@ -1,6 +1,8 @@
 export const CANVAS_WIDTH = 500;
 export const CANVAS_HEIGHT = 500;
 
+export const RENDER_DISTANCE = 4;
+
 export const MAZE_ROWS = 21;
 export const MAZE_COLUMNS = 21;
 /**

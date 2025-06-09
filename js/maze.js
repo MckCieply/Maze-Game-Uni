@@ -1,20 +1,39 @@
 import {getContext} from "./canvas.js";
-import {getCurrentMaze, TILE_HEIGHT, TILE_WIDTH} from "./config.js";
+import {getCurrentMaze, RENDER_DISTANCE, TILE_HEIGHT, TILE_WIDTH} from "./config.js";
 
 /**
- * Draws the maze grid on the canvas based on the `MAZES`.
- * Walls are drawn in dark gray (#333), and paths are drawn in light gray (#eee).
+ * Draws the maze grid on the canvas.
+ * A "fog of war" effect is created where only tiles near the player are visible.
+ * Visibility decreases in regular, square-shaped bands around the player.
  */
-
-export function drawMaze(template) {
+export function drawMaze(template, playerTileCoords) {
     const ctx = getContext();
+
+    ctx.fillStyle = '#393939';
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
     template.forEach((row, y) => {
         row.forEach((cell, x) => {
-            ctx.fillStyle = cell === 1 ? '#333' : '#eee';
-            ctx.fillRect(x * TILE_WIDTH, y * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
+            // Use Chebyshev distance to create a square-shaped field of view
+            const distance = Math.max(Math.abs(playerTileCoords.col - x), Math.abs(playerTileCoords.row - y));
+
+            if (distance <= RENDER_DISTANCE) {
+
+                // Visibility decreases in steps based on the distance.
+                let visibility = 1.0;
+                if (distance > 0) {
+                    visibility = 1.0 - ((distance - 1) / RENDER_DISTANCE);
+                }
+
+                ctx.globalAlpha = Math.max(0, visibility);
+                ctx.fillStyle = cell === 1 ? '#333' : '#eee';
+                ctx.fillRect(x * TILE_WIDTH, y * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
+            }
         });
     });
+
+    // Reset globalAlpha to 1.0 so it doesn't affect other drawing operations
+    ctx.globalAlpha = 1.0;
 }
 
 /**
