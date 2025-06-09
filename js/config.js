@@ -12,10 +12,9 @@ export const MAZE_COLUMNS = 21;
 let currentMazeKey;
 
 function createEmptyMaze(rows, cols) {
-    const maze = Array.from({ length: rows }, (_, y) =>
-        Array.from({ length: cols }, (_, x) => (x % 2 === 1 && y % 2 === 1 ? 0 : 1))
+    return Array.from({length: rows}, (_, y) =>
+        Array.from({length: cols}, (_, x) => (x % 2 === 1 && y % 2 === 1 ? 0 : 1))
     );
-    return maze;
 }
 
 function shuffle(array) {
