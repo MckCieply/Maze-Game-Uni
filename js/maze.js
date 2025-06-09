@@ -2,10 +2,10 @@ import {getContext} from "./canvas.js";
 import {getCurrentMaze, RENDER_DISTANCE, TILE_HEIGHT, TILE_WIDTH} from "./config.js";
 
 /**
- * Draws the maze grid on the canvas based on the `MAZES`.
- * Walls are drawn in dark gray (#333), and paths are drawn in light gray (#eee).
+ * Draws the maze grid on the canvas.
+ * A "fog of war" effect is created where only tiles near the player are visible.
+ * Visibility decreases in regular, square-shaped bands around the player.
  */
-
 export function drawMaze(template, playerTileCoords) {
     const ctx = getContext();
 
@@ -18,7 +18,6 @@ export function drawMaze(template, playerTileCoords) {
             const distance = Math.max(Math.abs(playerTileCoords.col - x), Math.abs(playerTileCoords.row - y));
 
             if (distance <= RENDER_DISTANCE) {
-                // If the tile is within the visible area, draw it over the gray fog.
 
                 // Visibility decreases in steps based on the distance.
                 let visibility = 1.0;
