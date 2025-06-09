@@ -1,17 +1,23 @@
 import {getContext} from "./canvas.js";
-import {getCurrentMaze, TILE_HEIGHT, TILE_WIDTH} from "./config.js";
+import {getCurrentMaze, RENDER_DISTANCE, TILE_HEIGHT, TILE_WIDTH} from "./config.js";
 
 /**
  * Draws the maze grid on the canvas based on the `MAZES`.
  * Walls are drawn in dark gray (#333), and paths are drawn in light gray (#eee).
  */
 
-export function drawMaze(template) {
+export function drawMaze(template, playerCoords) {
     const ctx = getContext();
 
     template.forEach((row, y) => {
         row.forEach((cell, x) => {
-            ctx.fillStyle = cell === 1 ? '#333' : '#eee';
+            const distance = Math.sqrt(Math.pow(playerCoords.col - x, 2) + Math.pow(playerCoords.row - y, 2));
+
+            if (distance <= RENDER_DISTANCE) {
+                ctx.fillStyle = cell === 1 ? '#333' : '#eee';
+            } else {
+                ctx.fillStyle = 'gray';
+            }
             ctx.fillRect(x * TILE_WIDTH, y * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
         });
     });

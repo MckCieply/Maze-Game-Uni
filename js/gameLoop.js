@@ -56,12 +56,14 @@ function render() {
     const ctx = getContext();
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    drawMaze(getCurrentMaze());
+    const playerPixelCoords = movementController.getRenderPosition();
+    const playerTileCoords = getTileIndexFromPixels(playerPixelCoords.x, playerPixelCoords.y);
 
-    const { x, y } = movementController.getRenderPosition();
+
+    drawMaze(getCurrentMaze(), playerTileCoords);
 
     ctx.fillStyle = "rgb(0, 100, 200)";
-    ctx.fillRect(x, y, TILE_WIDTH, TILE_HEIGHT);
+    ctx.fillRect(playerPixelCoords.x, playerPixelCoords.y, TILE_WIDTH, TILE_HEIGHT);
 }
 
 export function changeState(newState) {
