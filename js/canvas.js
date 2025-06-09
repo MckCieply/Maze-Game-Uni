@@ -19,18 +19,7 @@ export function setupCanvas() {
     ctx.scale(scale, scale);
 }
 
-
-export function getCanvas() {
-    return canvas;
-}
-
 export function getContext() {
     return ctx;
 }
 
-/**
- * Clears the entire canvas.
- */
-export function clearCanvas() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-}

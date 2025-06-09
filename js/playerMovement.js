@@ -1,5 +1,5 @@
-import { getTileIndexFromPixels, checkTile } from './maze.js';
-import { getCurrentMaze } from './config.js';
+import {checkTile, getTileIndexFromPixels} from './maze.js';
+import {getCurrentMaze} from './config.js';
 
 export function createPlayerMovementController(changeState) {
     let startX = 0;

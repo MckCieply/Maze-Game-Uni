@@ -1,9 +1,8 @@
-import { getContext } from './canvas.js';
-import { checkTile, drawMaze, getStartCoords, getTileIndexFromPixels } from './maze.js';
-import { getCurrentMaze, setCurrentMaze, TILE_HEIGHT, TILE_WIDTH } from "./config.js";
-import { regenerateMaze} from "./config.js";
-import { PlayerInput } from "./playerInput.js";
-import { createPlayerMovementController } from "./playerMovement.js";
+import {getContext} from './canvas.js';
+import {drawMaze, getStartCoords, getTileIndexFromPixels} from './maze.js';
+import {getCurrentMaze, regenerateMaze, TILE_HEIGHT, TILE_WIDTH} from "./config.js";
+import {PlayerInput} from "./playerInput.js";
+import {createPlayerMovementController} from "./playerMovement.js";
 
 let state = "playing";
 const playerInput = new PlayerInput();

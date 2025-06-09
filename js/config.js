@@ -1,7 +1,7 @@
 export const CANVAS_WIDTH = 500;
 export const CANVAS_HEIGHT = 500;
 
-export const RENDER_DISTANCE = 4;
+export const RENDER_DISTANCE = 5;
 
 export const MAZE_ROWS = 21;
 export const MAZE_COLUMNS = 21;
@@ -9,13 +9,10 @@ export const MAZE_COLUMNS = 21;
  * 0 = path, 1 = wall., 2 = start, 3 = end
  */
 
-let currentMazeKey;
-
 function createEmptyMaze(rows, cols) {
-    const maze = Array.from({ length: rows }, (_, y) =>
-        Array.from({ length: cols }, (_, x) => (x % 2 === 1 && y % 2 === 1 ? 0 : 1))
+    return Array.from({length: rows}, (_, y) =>
+        Array.from({length: cols}, (_, x) => (x % 2 === 1 && y % 2 === 1 ? 0 : 1))
     );
-    return maze;
 }
 
 function shuffle(array) {
@@ -90,13 +87,6 @@ export function getCurrentMaze() {
 }
 export function regenerateMaze() {
     currentMaze = generateMaze(MAZE_ROWS, MAZE_COLUMNS);
-}
-export function setCurrentMaze(mazeName) {
-    if (MAZES[mazeName]) {
-        currentMazeKey = mazeName;
-    } else {
-        console.error(`Maze ${mazeName} does not exist.`);
-    }
 }
 
 export const TILE_HEIGHT = CANVAS_HEIGHT / MAZE_ROWS
