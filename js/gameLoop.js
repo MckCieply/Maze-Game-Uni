@@ -23,16 +23,16 @@ function loop() {
 
 function handleInput() {
     if (!keyProcessed && !movementController.isPlayerMoving()) {
-        if (playerInput.isKeyPressed('ArrowUp')) {
+        if (playerInput.isKeyPressed('ArrowUp') || playerInput.isKeyPressed('W')) {
             if (movementController.tryMove(0, -TILE_HEIGHT)) keyProcessed = true;
         }
-        if (playerInput.isKeyPressed('ArrowDown')) {
+        if (playerInput.isKeyPressed('ArrowDown') || playerInput.isKeyPressed('S')) {
             if (movementController.tryMove(0, TILE_HEIGHT)) keyProcessed = true;
         }
-        if (playerInput.isKeyPressed('ArrowLeft')) {
+        if (playerInput.isKeyPressed('ArrowLeft') || playerInput.isKeyPressed('A')) {
             if (movementController.tryMove(-TILE_WIDTH, 0)) keyProcessed = true;
         }
-        if (playerInput.isKeyPressed('ArrowRight')) {
+        if (playerInput.isKeyPressed('ArrowRight') || playerInput.isKeyPressed('D')) {
             if (movementController.tryMove(TILE_WIDTH, 0)) keyProcessed = true;
         }
     }
